@@ -47,7 +47,7 @@ export const FeaturedCategories = () => {
   }
 
   return (
-    <section className="py-20">
+    <section className="py-20 bg-gradient-to-b from-background to-warm-beige">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-4">Shop by Category</h2>
         <p className="text-xl text-text-secondary text-center mb-12">

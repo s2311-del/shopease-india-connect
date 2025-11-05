@@ -38,40 +38,44 @@ const CategoryPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <nav className="text-sm text-text-secondary mb-4">
-            <a href="/" className="hover:text-primary">Home</a>
-            <span className="mx-2">/</span>
-            <span>{category?.name}</span>
-          </nav>
-          <h1 className="text-4xl font-bold mb-2">{category?.name}</h1>
-          <p className="text-xl text-text-secondary">{category?.description}</p>
+      <main className="flex-1">
+        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 py-12 mb-8">
+          <div className="container mx-auto px-4">
+            <nav className="text-sm text-text-secondary mb-4">
+              <a href="/" className="hover:text-primary">Home</a>
+              <span className="mx-2">/</span>
+              <span>{category?.name}</span>
+            </nav>
+            <h1 className="text-4xl font-bold mb-2">{category?.name}</h1>
+            <p className="text-xl text-text-secondary">{category?.description}</p>
+          </div>
         </div>
-
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="aspect-square rounded-xl" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-            ))}
-          </div>
-        ) : products && products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-xl text-text-secondary">
-              No products found in this category yet.
-            </p>
-          </div>
-        )}
+        
+        <div className="container mx-auto px-4 pb-8">
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="space-y-4">
+                  <Skeleton className="aspect-square rounded-xl" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : products && products.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-xl text-text-secondary">
+                No products found in this category yet.
+              </p>
+            </div>
+          )}
+        </div>
       </main>
       <Footer />
     </div>

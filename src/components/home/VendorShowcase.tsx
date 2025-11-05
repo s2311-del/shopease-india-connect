@@ -19,7 +19,7 @@ export const VendorShowcase = () => {
   if (isLoading) return null;
 
   return (
-    <section className="py-20">
+    <section className="py-20 bg-gradient-to-b from-warm-beige to-background">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-4">
           Powered by Local Businesses

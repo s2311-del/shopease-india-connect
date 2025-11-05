@@ -93,6 +93,11 @@ export const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  {session?.user?.email === "admin@gmail.com" && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin/dashboard">Admin Dashboard</Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link to="/my-orders">My Orders</Link>
                   </DropdownMenuItem>
