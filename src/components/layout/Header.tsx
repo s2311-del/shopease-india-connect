@@ -23,6 +23,23 @@ export const Header = () => {
     },
   });
 
+  const { data: isAdmin } = useQuery({
+    queryKey: ["isAdmin", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return false;
+      
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", session.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      
+      return !!data;
+    },
+    enabled: !!session?.user?.id,
+  });
+
   const { data: cartCount } = useQuery({
     queryKey: ["cartCount", session?.user?.id],
     queryFn: async () => {
@@ -93,15 +110,19 @@ export const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {session?.user?.email === "admin@gmail.com" && (
                     <DropdownMenuItem asChild>
-                      <Link to="/admin/dashboard">Admin Dashboard</Link>
+                      <Link to="/my-orders" className="cursor-pointer">
+                        My Orders
+                      </Link>
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem asChild>
-                    <Link to="/my-orders">My Orders</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout}>
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/dashboard" className="cursor-pointer">
+                          Admin Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>

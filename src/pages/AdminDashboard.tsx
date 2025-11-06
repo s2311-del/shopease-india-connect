@@ -19,11 +19,28 @@ const AdminDashboard = () => {
     },
   });
 
+  const { data: isAdmin } = useQuery({
+    queryKey: ["isAdmin", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return false;
+      
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", session.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      
+      return !!data;
+    },
+    enabled: !!session?.user?.id,
+  });
+
   useEffect(() => {
-    if (session && session.user.email !== "admin@gmail.com") {
+    if (session && isAdmin === false) {
       navigate("/");
     }
-  }, [session, navigate]);
+  }, [session, isAdmin, navigate]);
 
   const { data: stats } = useQuery({
     queryKey: ["adminStats"],
@@ -44,7 +61,7 @@ const AdminDashboard = () => {
         revenue: totalRevenue,
       };
     },
-    enabled: session?.user?.email === "admin@gmail.com",
+    enabled: !!isAdmin,
   });
 
   const { data: recentOrders } = useQuery({
@@ -58,10 +75,10 @@ const AdminDashboard = () => {
       if (error) throw error;
       return data;
     },
-    enabled: session?.user?.email === "admin@gmail.com",
+    enabled: !!isAdmin,
   });
 
-  if (!session || session.user.email !== "admin@gmail.com") {
+  if (!session || !isAdmin) {
     return null;
   }
 

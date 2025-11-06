@@ -18,14 +18,13 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
       toast({
         title: "Login failed",
         description: error.message,
@@ -34,12 +33,27 @@ const Login = () => {
       return;
     }
 
+    // Check if user has admin role
+    const { data: roleData } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", authData.user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    setLoading(false);
+
     toast({
       title: "Welcome back!",
       description: "You have successfully logged in.",
     });
 
-    navigate("/");
+    // Redirect based on role
+    if (roleData) {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/");
+    }
   };
 
   return (
