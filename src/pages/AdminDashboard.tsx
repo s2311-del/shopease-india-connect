@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Package, ShoppingCart, DollarSign, Users } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -95,6 +96,18 @@ const AdminDashboard = () => {
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-8">Admin Dashboard</h1>
+
+        {/* Quick Actions */}
+        <div className="flex gap-4 mb-8">
+          <Button onClick={() => navigate("/admin/products")}>
+            <Package className="mr-2 h-4 w-4" />
+            Manage Products
+          </Button>
+          <Button onClick={() => navigate("/admin/orders")} variant="secondary">
+            <ShoppingCart className="mr-2 h-4 w-4" />
+            View All Orders
+          </Button>
+        </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
