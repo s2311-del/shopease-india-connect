@@ -64,7 +64,34 @@ const AdminOrders = () => {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({ id, status, previousStatus }: { id: string; status: string; previousStatus: string }) => {
+      // If cancelling an order, revert stock
+      if (status === "Cancelled" && previousStatus !== "Cancelled") {
+        const { data: orderItems, error: itemsError } = await supabase
+          .from("order_items")
+          .select("product_id, quantity")
+          .eq("order_id", id);
+        
+        if (itemsError) throw itemsError;
+
+        // Revert stock for each product
+        for (const item of orderItems || []) {
+          const { data: product } = await supabase
+            .from("products")
+            .select("stock")
+            .eq("id", item.product_id)
+            .single();
+          
+          if (product) {
+            const newStock = product.stock + item.quantity;
+            await supabase
+              .from("products")
+              .update({ stock: newStock })
+              .eq("id", item.product_id);
+          }
+        }
+      }
+
       const { error } = await supabase
         .from("orders")
         .update({ status })
@@ -81,7 +108,10 @@ const AdminOrders = () => {
   });
 
   const handleStatusChange = (orderId: string, newStatus: string) => {
-    updateStatusMutation.mutate({ id: orderId, status: newStatus });
+    const order = orders?.find(o => o.id === orderId);
+    if (order) {
+      updateStatusMutation.mutate({ id: orderId, status: newStatus, previousStatus: order.status });
+    }
   };
 
   const filteredOrders = orders?.filter((order) => {
