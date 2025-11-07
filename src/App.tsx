@@ -17,6 +17,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
 import NotFound from "./pages/NotFound";
+import "leaflet/dist/leaflet.css";
 
 const queryClient = new QueryClient();
 
