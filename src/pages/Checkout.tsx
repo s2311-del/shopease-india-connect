@@ -86,6 +86,15 @@ const Checkout = () => {
 
       if (itemsError) throw itemsError;
 
+      // Update stock for each product
+      for (const item of cartItems) {
+        const newStock = item.products.stock - item.quantity;
+        await supabase
+          .from("products")
+          .update({ stock: newStock })
+          .eq("id", item.products.id);
+      }
+
       await supabase.from("cart").delete().eq("user_id", session.user.id);
 
       queryClient.invalidateQueries({ queryKey: ["cart"] });

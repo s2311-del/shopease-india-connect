@@ -37,6 +37,8 @@ const AdminProducts = () => {
     is_featured: false,
     is_on_sale: false,
   });
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   const { data: session } = useQuery({
     queryKey: ["session"],
@@ -161,6 +163,7 @@ const AdminProducts = () => {
       is_featured: false,
       is_on_sale: false,
     });
+    setUploadedImages([]);
     setEditingProduct(null);
   };
 
@@ -178,12 +181,75 @@ const AdminProducts = () => {
       is_featured: product.is_featured,
       is_on_sale: product.is_on_sale,
     });
+    setUploadedImages(product.images || []);
     setIsDialogOpen(true);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    if (uploadedImages.length + files.length > 4) {
+      toast({ 
+        title: "Maximum 4 images allowed", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    setUploadingImages(true);
+
+    try {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError, data } = await supabase.storage
+          .from('product-images')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+
+        return publicUrl;
+      });
+
+      const urls = await Promise.all(uploadPromises);
+      setUploadedImages([...uploadedImages, ...urls]);
+      
+      toast({ 
+        title: "Images uploaded successfully" 
+      });
+    } catch (error: any) {
+      toast({ 
+        title: "Failed to upload images", 
+        description: error.message,
+        variant: "destructive" 
+      });
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setUploadedImages(uploadedImages.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (uploadedImages.length === 0) {
+      toast({ 
+        title: "At least one image is required", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
     const submitData = {
       name: formData.name,
       description: formData.description,
@@ -191,7 +257,8 @@ const AdminProducts = () => {
       sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null,
       category_id: formData.category_id,
       vendor_id: formData.vendor_id || null,
-      image_url: formData.image_url,
+      image_url: uploadedImages[0],
+      images: uploadedImages,
       stock: parseInt(formData.stock),
       is_featured: formData.is_featured,
       is_on_sale: formData.is_on_sale,
@@ -311,12 +378,40 @@ const AdminProducts = () => {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="image_url">Image URL</Label>
+                  <Label htmlFor="images">Product Images (Min: 1, Max: 4) *</Label>
                   <Input
-                    id="image_url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    id="images"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    disabled={uploadingImages || uploadedImages.length >= 4}
                   />
+                  {uploadingImages && (
+                    <p className="text-sm text-text-secondary mt-2">Uploading images...</p>
+                  )}
+                  {uploadedImages.length > 0 && (
+                    <div className="grid grid-cols-4 gap-2 mt-4">
+                      {uploadedImages.map((url, index) => (
+                        <div key={index} className="relative group">
+                          <img 
+                            src={url} 
+                            alt={`Product ${index + 1}`} 
+                            className="w-full h-20 object-cover rounded"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleRemoveImage(index)}
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="stock">Stock *</Label>
