@@ -39,6 +39,7 @@ const Products = () => {
   const filteredProducts = products?.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = filterCategory === "all" || product.category_id === filterCategory;
+    const inStock = product.stock > 0;
     
     let matchesPrice = true;
     if (priceRange !== "all") {
@@ -59,7 +60,7 @@ const Products = () => {
       }
     }
     
-    return matchesSearch && matchesCategory && matchesPrice;
+    return matchesSearch && matchesCategory && matchesPrice && inStock;
   }).sort((a, b) => {
     const priceA = a.is_on_sale && a.sale_price ? a.sale_price : a.price;
     const priceB = b.is_on_sale && b.sale_price ? b.sale_price : b.price;

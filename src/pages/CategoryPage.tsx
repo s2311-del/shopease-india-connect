@@ -29,6 +29,7 @@ const CategoryPage = () => {
         .from("products")
         .select("*")
         .eq("category_id", id)
+        .gt("stock", 0)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;

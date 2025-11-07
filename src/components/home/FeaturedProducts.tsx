@@ -10,6 +10,7 @@ export const FeaturedProducts = () => {
         .from("products")
         .select("*")
         .eq("is_featured", true)
+        .gt("stock", 0)
         .limit(4);
       if (error) throw error;
       return data;
