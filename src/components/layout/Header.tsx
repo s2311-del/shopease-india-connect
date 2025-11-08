@@ -82,17 +82,17 @@ export const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between gap-4">
-          {/* Logo */}
-          <Link to={isAdminUser ? "/admin/dashboard" : "/"} className="flex items-center gap-2 text-2xl font-bold">
-            <span className="text-primary">Shop</span>
-            <span className="text-foreground">Ease</span>
+          {/* Logo (use public/icon.png and hide text for accessibility) */}
+          <Link to={isAdminUser ? "/admin/dashboard" : "/"} className="flex items-center gap-2">
+            <img src="/icon.png" alt="ShopEase" className="h-10 w-auto object-contain" />
+            <span className="sr-only">ShopEase</span>
           </Link>
 
           {/* Navigation Links */}
           {!isAdminUser && (
             <nav className="hidden md:flex items-center gap-6">
               <NavLink to="/">Home</NavLink>
-              <NavLink to="/products">🛒 Marketplace</NavLink>
+              <NavLink to="/products">Marketplace</NavLink>
             </nav>
           )}
           
@@ -188,7 +188,7 @@ export const Header = () => {
                       className="text-lg font-medium hover:text-primary transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      🛒 Marketplace
+                      Marketplace
                     </Link>
                     {session && (
                       <>
