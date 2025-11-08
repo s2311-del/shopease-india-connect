@@ -120,8 +120,8 @@ export const Header = () => {
             </form>
           )}
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-2">
             {!isAdminUser && (
               <Link to="/cart" className="relative">
                 <Button variant="ghost" size="icon">
@@ -160,35 +160,38 @@ export const Header = () => {
                 <Button variant="default">Login</Button>
               </Link>
             )}
+          </div>
 
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle>Menu</SheetTitle>
-                </SheetHeader>
-                <nav className="flex flex-col gap-4 mt-6">
-                  {!isAdminUser ? (
-                    <>
-                      <Link 
-                        to="/" 
-                        className="text-lg font-medium hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Home
-                      </Link>
-                      <Link 
-                        to="/products" 
-                        className="text-lg font-medium hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        🛒 Marketplace
-                      </Link>
-                      {session && (
+          {/* Mobile Menu */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-4 mt-6">
+                {!isAdminUser ? (
+                  <>
+                    <Link 
+                      to="/" 
+                      className="text-lg font-medium hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Home
+                    </Link>
+                    <Link 
+                      to="/products" 
+                      className="text-lg font-medium hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      🛒 Marketplace
+                    </Link>
+                    {session && (
+                      <>
                         <Link 
                           to="/my-orders" 
                           className="text-lg font-medium hover:text-primary transition-colors"
@@ -196,49 +199,69 @@ export const Header = () => {
                         >
                           My Orders
                         </Link>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <Link 
-                        to="/admin/dashboard" 
-                        className="text-lg font-medium hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link 
-                        to="/admin/products" 
-                        className="text-lg font-medium hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Products
-                      </Link>
-                      <Link 
-                        to="/admin/orders" 
-                        className="text-lg font-medium hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Orders
-                      </Link>
-                    </>
-                  )}
-                  {session && (
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="justify-start"
+                        <Link 
+                          to="/cart" 
+                          className="text-lg font-medium hover:text-primary transition-colors flex items-center gap-2"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <ShoppingCart className="h-5 w-5" />
+                          Cart
+                          {cartCount > 0 && (
+                            <span className="ml-auto h-6 w-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                              {cartCount}
+                            </span>
+                          )}
+                        </Link>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      to="/admin/dashboard" 
+                      className="text-lg font-medium hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
                     >
-                      Logout
+                      Dashboard
+                    </Link>
+                    <Link 
+                      to="/admin/products" 
+                      className="text-lg font-medium hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Products
+                    </Link>
+                    <Link 
+                      to="/admin/orders" 
+                      className="text-lg font-medium hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Orders
+                    </Link>
+                  </>
+                )}
+                
+                {session ? (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="justify-start mt-4"
+                  >
+                    Logout
+                  </Button>
+                ) : (
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="default" className="w-full">
+                      Login
                     </Button>
-                  )}
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
+                  </Link>
+                )}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
 
         {/* Mobile Search - Only for non-admin users */}
