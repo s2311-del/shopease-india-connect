@@ -8,32 +8,37 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-
 const contactSchema = z.object({
-  name: z.string().trim().min(1, { message: "Name is required" }).max(100),
-  email: z.string().trim().email({ message: "Invalid email address" }).max(255),
-  subject: z.string().trim().min(1, { message: "Subject is required" }).max(200),
-  message: z.string().trim().min(10, { message: "Message must be at least 10 characters" }).max(1000),
+  name: z.string().trim().min(1, {
+    message: "Name is required"
+  }).max(100),
+  email: z.string().trim().email({
+    message: "Invalid email address"
+  }).max(255),
+  subject: z.string().trim().min(1, {
+    message: "Subject is required"
+  }).max(200),
+  message: z.string().trim().min(10, {
+    message: "Message must be at least 10 characters"
+  }).max(1000)
 });
-
 const ContactUs = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
-    message: "",
+    message: ""
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     const result = contactSchema.safeParse(formData);
-    
     if (!result.success) {
       const newErrors: Record<string, string> = {};
-      result.error.errors.forEach((error) => {
+      result.error.errors.forEach(error => {
         if (error.path[0]) {
           newErrors[error.path[0].toString()] = error.message;
         }
@@ -41,25 +46,31 @@ const ContactUs = () => {
       setErrors(newErrors);
       return;
     }
-    
     setErrors({});
     toast({
       title: "Message sent!",
-      description: "We'll get back to you within 24 hours.",
+      description: "We'll get back to you within 24 hours."
     });
-    
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setFormData({
+      name: "",
+      email: "",
+      subject: "",
+      message: ""
+    });
   };
-
   const handleChange = (field: string, value: string) => {
-    setFormData({ ...formData, [field]: value });
+    setFormData({
+      ...formData,
+      [field]: value
+    });
     if (errors[field]) {
-      setErrors({ ...errors, [field]: "" });
+      setErrors({
+        ...errors,
+        [field]: ""
+      });
     }
   };
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
@@ -111,8 +122,10 @@ const ContactUs = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Address</h3>
-                      <p className="text-text-secondary">
-                        ShopEase Headquarters<br />
+                      <p className="text-text-secondary">ShopEase Headquarters
+123 Commerce Street
+Vadodara, Gujarat 390010
+India<br />
                         123 Commerce Street<br />
                         Mumbai, Maharashtra 400001<br />
                         India
@@ -136,60 +149,26 @@ const ContactUs = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <Label htmlFor="name">Name *</Label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => handleChange("name", e.target.value)}
-                      placeholder="Your full name"
-                      className={errors.name ? "border-destructive" : ""}
-                    />
-                    {errors.name && (
-                      <p className="text-sm text-destructive mt-1">{errors.name}</p>
-                    )}
+                    <Input id="name" value={formData.name} onChange={e => handleChange("name", e.target.value)} placeholder="Your full name" className={errors.name ? "border-destructive" : ""} />
+                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
                   </div>
 
                   <div>
                     <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleChange("email", e.target.value)}
-                      placeholder="your.email@example.com"
-                      className={errors.email ? "border-destructive" : ""}
-                    />
-                    {errors.email && (
-                      <p className="text-sm text-destructive mt-1">{errors.email}</p>
-                    )}
+                    <Input id="email" type="email" value={formData.email} onChange={e => handleChange("email", e.target.value)} placeholder="your.email@example.com" className={errors.email ? "border-destructive" : ""} />
+                    {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
                   </div>
 
                   <div>
                     <Label htmlFor="subject">Subject *</Label>
-                    <Input
-                      id="subject"
-                      value={formData.subject}
-                      onChange={(e) => handleChange("subject", e.target.value)}
-                      placeholder="How can we help?"
-                      className={errors.subject ? "border-destructive" : ""}
-                    />
-                    {errors.subject && (
-                      <p className="text-sm text-destructive mt-1">{errors.subject}</p>
-                    )}
+                    <Input id="subject" value={formData.subject} onChange={e => handleChange("subject", e.target.value)} placeholder="How can we help?" className={errors.subject ? "border-destructive" : ""} />
+                    {errors.subject && <p className="text-sm text-destructive mt-1">{errors.subject}</p>}
                   </div>
 
                   <div>
                     <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => handleChange("message", e.target.value)}
-                      placeholder="Tell us more about your inquiry..."
-                      rows={5}
-                      className={errors.message ? "border-destructive" : ""}
-                    />
-                    {errors.message && (
-                      <p className="text-sm text-destructive mt-1">{errors.message}</p>
-                    )}
+                    <Textarea id="message" value={formData.message} onChange={e => handleChange("message", e.target.value)} placeholder="Tell us more about your inquiry..." rows={5} className={errors.message ? "border-destructive" : ""} />
+                    {errors.message && <p className="text-sm text-destructive mt-1">{errors.message}</p>}
                   </div>
 
                   <Button type="submit" className="w-full">
@@ -202,8 +181,6 @@ const ContactUs = () => {
         </section>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default ContactUs;
