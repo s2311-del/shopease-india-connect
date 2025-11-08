@@ -190,6 +190,20 @@ export const Header = () => {
                     >
                       Marketplace
                     </Link>
+                    <Link 
+                      to="/about" 
+                      className="text-lg font-medium hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      About Us
+                    </Link>
+                    <Link 
+                      to="/contact" 
+                      className="text-lg font-medium hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Contact Us
+                    </Link>
                     {session && (
                       <>
                         <Link 

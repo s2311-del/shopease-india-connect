@@ -17,6 +17,8 @@ import OrderDetail from "./pages/OrderDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
 import "leaflet/dist/leaflet.css";
 
@@ -43,6 +45,8 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
